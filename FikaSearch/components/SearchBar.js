@@ -1,5 +1,5 @@
 import {React, useState} from 'react';
-import {StyleSheet, TextInput, View} from 'react-native';
+import {StyleSheet, TextInput} from 'react-native';
 import PropTypes from 'prop-types';
 const SearchBar = props => {
   const [text, onChangeText] = useState('Search movie catalogue ...');
