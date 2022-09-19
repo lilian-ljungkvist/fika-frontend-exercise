@@ -14,29 +14,45 @@ const App = () => {
       this.imgURL = _imgURL;
     }
   }
+  //Fetch search result from input text
   const onSearch = text => {
     setMovies([]);
-    const searchDB = `https://api.themoviedb.org/3/search/movie?api_key=d432b933ecc6d5642d8d2befbc40c7ac&language=en-US&query=${text}&page=1&include_adult=false`;
-    console.log(searchDB);
+    const searchDB = `https://api.themoviedb.org/3/search/movie?api_key=d432b933ecc6d5642d8d2befbc40c7ac&language=en-US&query=${text.toString()}&page=1&include_adult=false`;
     fetch(searchDB)
       .then(function (response) {
-        response.json().then(function (movies) {
-          movies.results.forEach(function (result) {
-            let imgRes;
-            fetch(`https://image.tmdb.org/t/p/w500/${result.poster_path}`).then(
-              function (_imgRes) {
-                imgRes = _imgRes.url;
+        if (
+          response === null ||
+          response === '' ||
+          typeof response === 'undefined'
+        ) {
+          setMovies([]);
+        } else {
+          response.json().then(function (movies) {
+            if (
+              movies.results === null ||
+              movies.results === '' ||
+              typeof movies.results === 'undefined'
+            ) {
+              setMovies([]);
+            } else {
+              movies.results.forEach(function (result) {
+                let imgRes;
+                fetch(
+                  `https://image.tmdb.org/t/p/w500/${result.poster_path}`,
+                ).then(function (_imgRes) {
+                  imgRes = _imgRes.url;
 
-                let newMovie = new MovieData(
-                  result.title,
-                  result.genre_ids,
-                  imgRes,
-                );
-                setMovies(movies => [...movies, newMovie]);
-              },
-            );
+                  let newMovie = new MovieData(
+                    result.title,
+                    result.genre_ids,
+                    imgRes,
+                  );
+                  setMovies(movies => [...movies, newMovie]);
+                });
+              });
+            }
           });
-        });
+        }
       })
       .catch(err => console.error(err));
   };
@@ -105,8 +121,17 @@ const App = () => {
     for (let i = 0; i < movies.length; i++) {
       moviesList.push(renderMovie(i));
     }
-
-    return <>{moviesList}</>;
+    if (moviesList.length > 0) {
+      return <>{moviesList}</>;
+    } else {
+      return (
+        <>
+          <Text style={styles.errorText}>
+            Sorry, we couldn't find any movies that match your search
+          </Text>
+        </>
+      );
+    }
   };
   useEffect(() => {
     fetchMovies();
@@ -137,6 +162,11 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 32,
     fontWeight: '800',
+  },
+  errorText: {
+    fontSize: 24,
+    fontWeight: '300',
+    color: 'white',
   },
 });
 

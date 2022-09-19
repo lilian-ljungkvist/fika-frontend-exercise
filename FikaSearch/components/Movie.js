@@ -19,7 +19,11 @@ const Movie = props => {
   );
 };
 
-Movie.propTypes = {};
+Movie.propTypes = {
+  title: PropTypes.string,
+  genre: PropTypes.array,
+  imgURL: PropTypes.string,
+};
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'center',

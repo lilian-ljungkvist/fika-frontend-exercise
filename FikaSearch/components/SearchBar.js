@@ -13,8 +13,7 @@ const SearchBar = props => {
     />
   );
 };
-SearchBar.defaultProps = {};
-SearchBar.propTypes = {};
+SearchBar.propTypes = {title: PropTypes.func};
 
 const styles = StyleSheet.create({
   input: {
